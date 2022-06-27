@@ -1,4 +1,5 @@
 from turtle import position
+from numpy import block
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 
@@ -15,8 +16,12 @@ dirt_texture  = load_texture('assets/dirt_block.png')
 sky_texture   = load_texture('assets/skybox.png')
 
 
-xlist = [1,2,3,4,5,6,7,8,9]
+xlist = [6,7,8,9,10,11,12,13,14]
+
 ylist = [1,2,3,4,5,6,7,8,9]
+
+zlist = [6,7,8,9,10,11,12,13,14]
+
 
 arm_texture   = load_texture('assets/arm_texture.png')
 
@@ -38,10 +43,16 @@ window.fps_counter.enabled = True
 
 window.exit_button.visible = True
 
-enemy = 1
+enemies = 1
+
+scales = [1/2,3]
+
+block_scale = scales[0]
 
 def update():
+
 	global block_pick
+
 	if held_keys['left mouse'] or held_keys['right mouse']:
 		hand.active()
 
@@ -73,15 +84,15 @@ def update():
 
 
 class Voxel(Button):
-	def __init__(self, position = (0,0,0), texture = grass_texture):
+	def __init__(self, position = (0,0,0), texture = grass_texture,scale = block_scale):
 		super().__init__(
 			parent = scene,
 			position = position,
 			model = 'assets/block',
 			origin_y = 0.5,
 			texture = texture,
-			color = color.color(0,0,random.uniform(0.9,1)),
-			scale = 0.5)
+			color = color.color(0,0,9),
+			scale = block_scale)
 
 
 
@@ -97,10 +108,19 @@ class Voxel(Button):
 				if block_pick == 3: voxel = Voxel(position = self.position + mouse.normal, texture = brick_texture)
 				if block_pick == 4: voxel = Voxel(position = self.position + mouse.normal, texture = dirt_texture)
 
+
+
+
 			if key == 'left mouse down':
 
 				destroy_sound.play()
+
 				destroy(self)
+
+
+
+
+
 
 class Sky(Entity):
 	def __init__(self):
@@ -108,8 +128,7 @@ class Sky(Entity):
 			parent = scene,
 			model = 'sphere',
 			color = color.blue,
-			scale = 150,
-
+			scale = 500,
 			double_sided = True)
 
 
@@ -135,25 +154,33 @@ class Hand(Entity):
 				voxel = Voxel(position = (x,y,z))
 
 
-	for z in range(len(xlist)):
-		voxel = Voxel(position = (xlist[z],ylist[z],z),texture=stone_texture)
+				for z in range(len(xlist)):
+					voxel = Voxel(position = (xlist[z],ylist[z],zlist[z]),texture=stone_texture)
 	
 
-	for x in range(map_width):
+		for x in range(map_width):
 
-		for y in range(layers):
+			for y in range(layers):
 
-			for z in range(map_height):
+				for z in range(map_height):
+					z+=6
+					voxel = Voxel(scale = block_scale,position = (x+map_height-1,y+map_height,z+map_height-1))
 
-				voxel = Voxel(position = (x+map_height-1,y+map_height,z+map_height-1))
+					z+=13
+					block_scale+=1
+					voxel = Voxel(scale = block_scale,position = (x+map_height-1,y+map_height,z+map_height-1))
+				
 
 
 			
+
+
+
+
+
 player = FirstPersonController()
 
 sky = Sky()
-
-sky1=Sky()
 
 hand = Hand()
 
