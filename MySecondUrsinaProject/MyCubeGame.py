@@ -44,6 +44,7 @@ window.fps_counter.enabled = True
 window.exit_button.visible = True
 
 enemies = 1
+step = 5
 
 scales = [1/2,3]
 
@@ -163,12 +164,14 @@ class Hand(Entity):
 			for y in range(layers):
 
 				for z in range(map_height):
-					z+=6
+
+					z += step + 1
 					voxel = Voxel(scale = block_scale,position = (x+map_height-1,y+map_height,z+map_height-1))
 
-					z+=13
-					block_scale+=1
+					z += step * 3 
 					voxel = Voxel(scale = block_scale,position = (x+map_height-1,y+map_height,z+map_height-1))
+
+
 				
 
 
